@@ -19,6 +19,7 @@ import ProviderDashboard from './pages/ProviderDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import Profile from './pages/Profile'
 import Orders from './pages/Orders'
+import OrderTracking from './pages/OrderTracking'
 
 // Placeholder components for remaining pages
 const Supports = () => <div className="p-8">Supports Page (Coming Soon)</div>
@@ -83,6 +84,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Orders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders/:id/track"
+            element={
+              <ProtectedRoute>
+                <OrderTracking />
               </ProtectedRoute>
             }
           />

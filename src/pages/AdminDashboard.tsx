@@ -3,6 +3,7 @@ import { useAuthStore } from '../store/authStore'
 import AdminDesigns from './admin/AdminDesigns'
 import AdminUsers from './admin/AdminUsers'
 import AdminStats from './admin/AdminStats'
+import AdminReports from './admin/AdminReports'
 
 export default function AdminDashboard() {
   const { user } = useAuthStore()
@@ -10,6 +11,7 @@ export default function AdminDashboard() {
 
   const tabs = [
     { id: 'stats', label: 'Statistiques', path: '/admin/stats' },
+    { id: 'reports', label: 'Rapports', path: '/admin/reports' },
     { id: 'designs', label: 'Designs', path: '/admin/designs' },
     { id: 'users', label: 'Utilisateurs', path: '/admin/users' },
   ]
@@ -51,6 +53,7 @@ export default function AdminDashboard() {
       <Routes>
         <Route index element={<AdminStats />} />
         <Route path="stats" element={<AdminStats />} />
+        <Route path="reports" element={<AdminReports />} />
         <Route path="designs" element={<AdminDesigns />} />
         <Route path="users" element={<AdminUsers />} />
       </Routes>

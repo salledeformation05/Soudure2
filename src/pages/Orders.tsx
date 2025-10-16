@@ -315,6 +315,12 @@ export default function Orders() {
                     >
                       Voir le design
                     </Link>
+                    <Link
+                      to={`/orders/${order.id}/track`}
+                      className="btn btn-secondary text-sm"
+                    >
+                      Suivre la commande
+                    </Link>
                     {order.status === 'pending' && (
                       <button
                         onClick={() => cancelOrder(order.id, order.status)}
