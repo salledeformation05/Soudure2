@@ -25,25 +25,34 @@ export default function Layout() {
             </Link>
 
             {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-6">
               <Link to="/designs" className="text-gray-700 hover:text-primary-600 transition-colors">
-                Designs
+                Catalogue
               </Link>
               <Link to="/supports" className="text-gray-700 hover:text-primary-600 transition-colors">
                 Produits
               </Link>
+              <Link to="/about" className="text-gray-700 hover:text-primary-600 transition-colors">
+                À propos
+              </Link>
+              <Link to="/faq" className="text-gray-700 hover:text-primary-600 transition-colors">
+                FAQ
+              </Link>
+              <Link to="/contact" className="text-gray-700 hover:text-primary-600 transition-colors">
+                Contact
+              </Link>
               {user?.role === 'creator' && (
-                <Link to="/creator" className="text-gray-700 hover:text-primary-600 transition-colors">
-                  Mes Créations
+                <Link to="/creator" className="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+                  Espace Créateur
                 </Link>
               )}
               {user?.role === 'provider' && (
-                <Link to="/provider" className="text-gray-700 hover:text-primary-600 transition-colors">
-                  Mes Commandes
+                <Link to="/provider" className="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+                  Espace Prestataire
                 </Link>
               )}
               {user?.role === 'admin' && (
-                <Link to="/admin" className="text-gray-700 hover:text-primary-600 transition-colors">
+                <Link to="/admin" className="text-primary-600 hover:text-primary-700 font-medium transition-colors">
                   Administration
                 </Link>
               )}
@@ -53,6 +62,16 @@ export default function Layout() {
             <div className="flex items-center space-x-4">
               {user ? (
                 <>
+                  <Link to="/favorites" className="text-gray-700 hover:text-primary-600 transition-colors">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </Link>
+                  <Link to="/cart" className="text-gray-700 hover:text-primary-600 transition-colors">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                  </Link>
                   <Link to="/orders" className="text-gray-700 hover:text-primary-600 transition-colors">
                     Mes Commandes
                   </Link>
@@ -99,24 +118,26 @@ export default function Layout() {
             <div>
               <h4 className="font-semibold text-gray-900 mb-4">Liens rapides</h4>
               <ul className="space-y-2">
-                <li><Link to="/designs" className="text-sm text-gray-600 hover:text-primary-600">Designs</Link></li>
+                <li><Link to="/designs" className="text-sm text-gray-600 hover:text-primary-600">Catalogue</Link></li>
                 <li><Link to="/supports" className="text-sm text-gray-600 hover:text-primary-600">Produits</Link></li>
-                <li><Link to="/how-it-works" className="text-sm text-gray-600 hover:text-primary-600">Comment ça marche</Link></li>
+                <li><Link to="/about" className="text-sm text-gray-600 hover:text-primary-600">À propos</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">Pour les créateurs</h4>
+              <h4 className="font-semibold text-gray-900 mb-4">Compte</h4>
               <ul className="space-y-2">
-                <li><Link to="/become-creator" className="text-sm text-gray-600 hover:text-primary-600">Devenir créateur</Link></li>
-                <li><Link to="/creator-guide" className="text-sm text-gray-600 hover:text-primary-600">Guide créateur</Link></li>
+                <li><Link to="/register" className="text-sm text-gray-600 hover:text-primary-600">Créer un compte</Link></li>
+                <li><Link to="/login" className="text-sm text-gray-600 hover:text-primary-600">Se connecter</Link></li>
+                <li><Link to="/orders" className="text-sm text-gray-600 hover:text-primary-600">Mes commandes</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold text-gray-900 mb-4">Support</h4>
               <ul className="space-y-2">
-                <li><Link to="/contact" className="text-sm text-gray-600 hover:text-primary-600">Contact</Link></li>
                 <li><Link to="/faq" className="text-sm text-gray-600 hover:text-primary-600">FAQ</Link></li>
-                <li><Link to="/terms" className="text-sm text-gray-600 hover:text-primary-600">CGV</Link></li>
+                <li><Link to="/contact" className="text-sm text-gray-600 hover:text-primary-600">Contact</Link></li>
+                <li><Link to="/terms" className="text-sm text-gray-600 hover:text-primary-600">CGU</Link></li>
+                <li><Link to="/privacy" className="text-sm text-gray-600 hover:text-primary-600">Confidentialité</Link></li>
               </ul>
             </div>
           </div>

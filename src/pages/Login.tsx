@@ -47,6 +47,21 @@ export default function Login() {
           </p>
         </div>
 
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <h3 className="text-sm font-semibold text-blue-900 mb-2">Comptes de test</h3>
+          <div className="space-y-2 text-xs text-blue-800">
+            <div>
+              <strong>Admin:</strong> admin@alphacadeau.fr / Admin123!
+            </div>
+            <div>
+              <strong>Créateur:</strong> creator@alphacadeau.fr / Creator123!
+            </div>
+            <div>
+              <strong>Prestataire:</strong> provider@alphacadeau.fr / Provider123!
+            </div>
+          </div>
+        </div>
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
             <div className="rounded-md bg-red-50 p-4">

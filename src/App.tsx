@@ -20,9 +20,15 @@ import AdminDashboard from './pages/AdminDashboard'
 import Profile from './pages/Profile'
 import Orders from './pages/Orders'
 import OrderTracking from './pages/OrderTracking'
+import FAQ from './pages/FAQ'
+import About from './pages/About'
+import Contact from './pages/Contact'
+import Cart from './pages/Cart'
+import Supports from './pages/Supports'
+import Favorites from './pages/Favorites'
+import Terms from './pages/Terms'
+import Privacy from './pages/Privacy'
 
-// Placeholder components for remaining pages
-const Supports = () => <div className="p-8">Supports Page (Coming Soon)</div>
 const Unauthorized = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="text-center">
@@ -68,6 +74,12 @@ function App() {
           <Route path="/designs" element={<Designs />} />
           <Route path="/designs/:id" element={<DesignDetail />} />
           <Route path="/supports" element={<Supports />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* Protected routes */}
@@ -108,6 +120,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <OrderConfirm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/favorites"
+            element={
+              <ProtectedRoute>
+                <Favorites />
               </ProtectedRoute>
             }
           />
