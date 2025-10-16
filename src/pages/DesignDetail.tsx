@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import type { Design, Support } from '../types'
 import LoadingSpinner from '../components/LoadingSpinner'
+import ReviewsList from '../components/ReviewsList'
 
 export default function DesignDetail() {
   const { id } = useParams<{ id: string }>()
@@ -284,6 +285,14 @@ export default function DesignDetail() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          Avis clients
+        </h2>
+        <ReviewsList designId={design.id} />
       </div>
     </div>
   )

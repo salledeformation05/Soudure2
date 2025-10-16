@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import LoadingSpinner from '../components/LoadingSpinner'
+import ReviewForm from '../components/ReviewForm'
 
 interface Order {
   id: string
@@ -30,6 +31,7 @@ export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'pending' | 'in_production' | 'completed'>('all')
+  const [reviewingOrder, setReviewingOrder] = useState<Order | null>(null)
 
   useEffect(() => {
     fetchOrders()
@@ -322,7 +324,10 @@ export default function Orders() {
                       </button>
                     )}
                     {order.status === 'delivered' && (
-                      <button className="btn btn-primary text-sm">
+                      <button
+                        onClick={() => setReviewingOrder(order)}
+                        className="btn btn-primary text-sm"
+                      >
                         Laisser un avis
                       </button>
                     )}
@@ -331,6 +336,39 @@ export default function Orders() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Review Modal */}
+      {reviewingOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-lg w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900">
+                Laisser un avis
+              </h3>
+              <button
+                onClick={() => setReviewingOrder(null)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <p className="text-gray-600 mb-4">
+              Comment s'est passée votre expérience avec {reviewingOrder.designs.title} ?
+            </p>
+            <ReviewForm
+              orderId={reviewingOrder.id}
+              designId={reviewingOrder.design_id}
+              providerId={reviewingOrder.providers?.business_name}
+              onSuccess={() => {
+                setReviewingOrder(null)
+                fetchOrders()
+              }}
+            />
+          </div>
         </div>
       )}
     </div>
