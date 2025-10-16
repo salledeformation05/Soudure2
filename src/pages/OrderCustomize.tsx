@@ -97,6 +97,22 @@ export default function OrderCustomize() {
 
       if (error) throw error
 
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/assign-provider`
+      const headers = {
+        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      }
+
+      try {
+        await fetch(apiUrl, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ orderId: order.id }),
+        })
+      } catch (assignError) {
+        console.error('Provider assignment failed:', assignError)
+      }
+
       navigate('/order/confirm', {
         state: { orderId: order.id },
       })
