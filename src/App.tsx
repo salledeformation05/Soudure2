@@ -12,15 +12,16 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Designs from './pages/Designs'
 import DesignDetail from './pages/DesignDetail'
+import OrderCustomize from './pages/OrderCustomize'
+import OrderConfirm from './pages/OrderConfirm'
+import CreatorDashboard from './pages/CreatorDashboard'
+import ProviderDashboard from './pages/ProviderDashboard'
 
 // Placeholder components for remaining pages
 const Profile = () => <div className="p-8">Profile Page (Coming Soon)</div>
 const Orders = () => <div className="p-8">Orders Page (Coming Soon)</div>
-const CreatorDashboard = () => <div className="p-8">Creator Dashboard (Coming Soon)</div>
-const ProviderDashboard = () => <div className="p-8">Provider Dashboard (Coming Soon)</div>
 const AdminDashboard = () => <div className="p-8">Admin Dashboard (Coming Soon)</div>
 const Supports = () => <div className="p-8">Supports Page (Coming Soon)</div>
-const OrderCustomize = () => <div className="p-8">Order Customization (Coming Soon)</div>
 const Unauthorized = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="text-center">
@@ -90,6 +91,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <OrderCustomize />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/order/confirm"
+            element={
+              <ProtectedRoute>
+                <OrderConfirm />
               </ProtectedRoute>
             }
           />
