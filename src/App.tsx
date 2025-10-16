@@ -16,11 +16,11 @@ import OrderCustomize from './pages/OrderCustomize'
 import OrderConfirm from './pages/OrderConfirm'
 import CreatorDashboard from './pages/CreatorDashboard'
 import ProviderDashboard from './pages/ProviderDashboard'
+import AdminDashboard from './pages/AdminDashboard'
+import Profile from './pages/Profile'
+import Orders from './pages/Orders'
 
 // Placeholder components for remaining pages
-const Profile = () => <div className="p-8">Profile Page (Coming Soon)</div>
-const Orders = () => <div className="p-8">Orders Page (Coming Soon)</div>
-const AdminDashboard = () => <div className="p-8">Admin Dashboard (Coming Soon)</div>
 const Supports = () => <div className="p-8">Supports Page (Coming Soon)</div>
 const Unauthorized = () => (
   <div className="min-h-screen flex items-center justify-center">

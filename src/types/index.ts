@@ -7,6 +7,7 @@ export interface User {
   role: UserRole;
   full_name?: string;
   phone?: string;
+  address?: string;
   language: string;
   location?: string;
   created_at: string;
