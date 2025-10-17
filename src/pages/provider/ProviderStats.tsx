@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuthStore } from '../../store/authStore'
 import LoadingSpinner from '../../components/LoadingSpinner'
+import PaymentSection from '../../components/PaymentSection'
 
 interface Stats {
   totalOrders: number
@@ -337,6 +338,13 @@ export default function ProviderStats() {
           </div>
         </div>
       </div>
+
+      {/* Payment Section */}
+      <PaymentSection
+        totalAmount={stats?.totalRevenue || 0}
+        paidAmount={(stats?.totalRevenue || 0) * 0.4}
+        role="provider"
+      />
 
       {/* Quick Actions */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-300">
