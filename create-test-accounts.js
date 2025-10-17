@@ -41,6 +41,12 @@ const testAccounts = [
     password: 'Provider123!',
     role: 'provider',
     fullName: 'Prestataire Test'
+  },
+  {
+    email: 'client@alphacadeau.fr',
+    password: 'Client123!',
+    role: 'client',
+    fullName: 'Client Test'
   }
 ]
 

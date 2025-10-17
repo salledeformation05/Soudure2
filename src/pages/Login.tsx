@@ -85,7 +85,8 @@ export default function Login() {
                 {[
                   { role: '👑 Admin', email: 'admin@alphacadeau.fr', password: 'Admin123!', color: 'from-purple-500 to-purple-600' },
                   { role: '🎨 Créateur', email: 'creator@alphacadeau.fr', password: 'Creator123!', color: 'from-green-500 to-green-600' },
-                  { role: '🏭 Prestataire', email: 'provider@alphacadeau.fr', password: 'Provider123!', color: 'from-orange-500 to-orange-600' }
+                  { role: '🏭 Prestataire', email: 'provider@alphacadeau.fr', password: 'Provider123!', color: 'from-orange-500 to-orange-600' },
+                  { role: '👤 Client', email: 'client@alphacadeau.fr', password: 'Client123!', color: 'from-blue-500 to-blue-600' }
                 ].map((account, index) => (
                   <button
                     key={index}

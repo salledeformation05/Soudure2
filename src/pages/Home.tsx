@@ -189,83 +189,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Benefits Section - Version améliorée */}
-      <div className="py-24 bg-white relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Content */}
-            <div className="relative">
-              <span className="inline-block px-4 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-4">
-                Pour les Créateurs
-              </span>
-              
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
-                Transformez votre <span className="text-primary-600">Passion</span> en Réussite
-              </h2>
-              
-              <p className="text-xl text-gray-600 mb-10 leading-relaxed">
-                Rejoignez une communauté d'artistes qui vivent de leur créativité grâce à notre plateforme innovante.
-              </p>
-
-              <div className="space-y-6">
-                {[
-                  "Monétisez vos créations avec des royalties attractives",
-                  "Touchez une audience internationale sans effort",
-                  "Libérez-vous de la logistique et de la production",
-                  "Bénéficiez de statistiques détaillées et d'analyses avancées",
-                  "Protégez vos droits d'auteur automatiquement"
-                ].map((benefit, index) => (
-                  <div key={index} className="flex items-start group">
-                    <div className="flex-shrink-0 w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center mr-4 group-hover:bg-primary-100 transition-colors duration-300">
-                      <span className="text-primary-600 text-lg">✓</span>
-                    </div>
-                    <span className="text-gray-700 text-lg pt-2 group-hover:text-gray-900 transition-colors duration-300">
-                      {benefit}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <Link 
-                to="/become-creator" 
-                className="group inline-flex items-center mt-10 bg-primary-600 text-white text-lg font-semibold px-8 py-4 rounded-2xl hover:bg-primary-700 transition-all duration-300 hover:shadow-xl hover:scale-105"
-              >
-                Devenir Créateur
-                <span className="ml-3 group-hover:translate-x-1 transition-transform duration-300">→</span>
-              </Link>
-            </div>
-
-            {/* Visual */}
-            <div className="relative">
-              <div className="relative bg-gradient-to-br from-primary-500 to-primary-700 rounded-3xl p-8 shadow-2xl">
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                      <span className="text-2xl">👨‍🎨</span>
-                    </div>
-                    <div>
-                      <div className="text-white font-semibold">Thomas, Designer</div>
-                      <div className="text-primary-200 text-sm">+15k€ de revenus</div>
-                    </div>
-                  </div>
-                  <div className="text-white/90 leading-relaxed">
-                    "Cette plateforme a transformé ma carrière. Je me concentre sur la création tandis qu'ils gèrent tout le reste. Une véritable révolution !"
-                  </div>
-                </div>
-                
-                {/* Floating elements */}
-                <div className="absolute -top-4 -right-4 bg-white rounded-2xl p-4 shadow-lg">
-                  <div className="text-2xl font-bold text-primary-600">+89%</div>
-                  <div className="text-xs text-gray-600">Revenus créateurs</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Featured Designs Section */}
-      <div className="py-24 bg-white">
+      <div className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">
@@ -378,6 +303,81 @@ export default function Home() {
               </div>
             </>
           )}
+        </div>
+      </div>
+
+      {/* Benefits Section - Version améliorée */}
+      <div className="py-24 bg-white relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Content */}
+            <div className="relative">
+              <span className="inline-block px-4 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-4">
+                Pour les Créateurs
+              </span>
+
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
+                Transformez votre <span className="text-primary-600">Passion</span> en Réussite
+              </h2>
+
+              <p className="text-xl text-gray-600 mb-10 leading-relaxed">
+                Rejoignez une communauté d'artistes qui vivent de leur créativité grâce à notre plateforme innovante.
+              </p>
+
+              <div className="space-y-6">
+                {[
+                  "Monétisez vos créations avec des royalties attractives",
+                  "Touchez une audience internationale sans effort",
+                  "Libérez-vous de la logistique et de la production",
+                  "Bénéficiez de statistiques détaillées et d'analyses avancées",
+                  "Protégez vos droits d'auteur automatiquement"
+                ].map((benefit, index) => (
+                  <div key={index} className="flex items-start group">
+                    <div className="flex-shrink-0 w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center mr-4 group-hover:bg-primary-100 transition-colors duration-300">
+                      <span className="text-primary-600 text-lg">✓</span>
+                    </div>
+                    <span className="text-gray-700 text-lg pt-2 group-hover:text-gray-900 transition-colors duration-300">
+                      {benefit}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <Link
+                to="/become-creator"
+                className="group inline-flex items-center mt-10 bg-primary-600 text-white text-lg font-semibold px-8 py-4 rounded-2xl hover:bg-primary-700 transition-all duration-300 hover:shadow-xl hover:scale-105"
+              >
+                Devenir Créateur
+                <span className="ml-3 group-hover:translate-x-1 transition-transform duration-300">→</span>
+              </Link>
+            </div>
+
+            {/* Visual */}
+            <div className="relative">
+              <div className="relative bg-gradient-to-br from-primary-500 to-primary-700 rounded-3xl p-8 shadow-2xl">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                      <span className="text-2xl">👨‍🎨</span>
+                    </div>
+                    <div>
+                      <div className="text-white font-semibold">Thomas, Designer</div>
+                      <div className="text-primary-200 text-sm">+15k€ de revenus</div>
+                    </div>
+                  </div>
+                  <div className="text-white/90 leading-relaxed">
+                    "Cette plateforme a transformé ma carrière. Je me concentre sur la création tandis qu'ils gèrent tout le reste. Une véritable révolution !"
+                  </div>
+                </div>
+
+                {/* Floating elements */}
+                <div className="absolute -top-4 -right-4 bg-white rounded-2xl p-4 shadow-lg">
+                  <div className="text-2xl font-bold text-primary-600">+89%</div>
+                  <div className="text-xs text-gray-600">Revenus créateurs</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
