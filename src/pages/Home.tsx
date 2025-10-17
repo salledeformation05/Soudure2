@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
+import type { Design } from '../types'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Home() {
   const { user } = useAuthStore()
+  const [featuredDesigns, setFeaturedDesigns] = useState<Design[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchFeaturedDesigns()
+  }, [])
+
+  const fetchFeaturedDesigns = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('designs')
+        .select('*')
+        .eq('status', 'approved')
+        .eq('available', true)
+        .order('views', { ascending: false })
+        .limit(8)
+
+      if (error) throw error
+      setFeaturedDesigns(data || [])
+    } catch (error) {
+      console.error('Error fetching featured designs:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="bg-white">
@@ -232,6 +261,123 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Featured Designs Section */}
+      <div className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">
+              Catalogue
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Designs <span className="text-primary-600">Populaires</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Découvrez notre sélection de designs les plus appréciés par notre communauté
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="py-16 text-center">
+              <LoadingSpinner size="lg" />
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {featuredDesigns.map((design) => (
+                  <Link
+                    key={design.id}
+                    to={`/designs/${design.id}`}
+                    className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl border border-gray-100 overflow-hidden transition-all duration-500 transform hover:scale-105 hover:-translate-y-2"
+                  >
+                    <div className="relative aspect-square bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                      <img
+                        src={design.thumbnail_url || design.image_url}
+                        alt={design.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
+
+                      <div className="absolute top-4 left-4">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/90 backdrop-blur-sm text-gray-900">
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                          Disponible
+                        </span>
+                      </div>
+
+                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault()
+                          }}
+                          className="p-2 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg hover:bg-white transition-colors duration-200"
+                        >
+                          <span className="w-5 h-5">❤️</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="p-6">
+                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-primary-600 transition-colors duration-200 text-lg">
+                        {design.title}
+                      </h3>
+
+                      {design.description && (
+                        <p className="text-gray-600 mb-3 line-clamp-2 text-sm leading-relaxed">
+                          {design.description}
+                        </p>
+                      )}
+
+                      {design.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-4">
+                          {design.tags.slice(0, 2).map((tag: string, index: number) => (
+                            <span
+                              key={index}
+                              className="text-xs bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 px-2 py-1 rounded-lg font-medium"
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <span className="flex items-center gap-1">
+                            <span className="w-4 h-4">👁️</span>
+                            {design.views}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <span className="w-4 h-4">❤️</span>
+                            {design.favorites}
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-lg bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
+                            {design.price.toFixed(2)} €
+                          </div>
+                          <div className="text-xs text-gray-500">à partir de</div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="mt-12 text-center">
+                <Link
+                  to="/designs"
+                  className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                >
+                  Voir tous les designs
+                  <span className="ml-2">→</span>
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
