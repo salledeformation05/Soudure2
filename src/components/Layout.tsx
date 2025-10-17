@@ -46,7 +46,7 @@ export default function Layout() {
                 to="/designs"
                 className={`px-4 py-2 rounded-lg transition-all font-medium ${
                   isActive('/designs')
-                    ? 'bg-primary-100 text-primary-700'
+                    ? 'bg-primary-600 text-white shadow-md'
                     : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
                 }`}
               >
@@ -56,7 +56,7 @@ export default function Layout() {
                 to="/supports"
                 className={`px-4 py-2 rounded-lg transition-all font-medium ${
                   isActive('/supports')
-                    ? 'bg-primary-100 text-primary-700'
+                    ? 'bg-primary-600 text-white shadow-md'
                     : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
                 }`}
               >
@@ -71,14 +71,14 @@ export default function Layout() {
                       : 'bg-primary-50 text-primary-700 hover:bg-primary-100'
                   }`}
                 >
-                  Tableau de bord
+                  Dashboard
                 </Link>
               )}
               <Link
                 to="/about"
                 className={`px-4 py-2 rounded-lg transition-all font-medium ${
                   isActive('/about')
-                    ? 'bg-primary-100 text-primary-700'
+                    ? 'bg-primary-600 text-white shadow-md'
                     : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
                 }`}
               >
@@ -88,7 +88,7 @@ export default function Layout() {
                 to="/contact"
                 className={`px-4 py-2 rounded-lg transition-all font-medium ${
                   isActive('/contact')
-                    ? 'bg-primary-100 text-primary-700'
+                    ? 'bg-primary-600 text-white shadow-md'
                     : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
                 }`}
               >
@@ -104,7 +104,7 @@ export default function Layout() {
                     to="/favorites"
                     className={`p-2 rounded-lg transition-all ${
                       isActive('/favorites')
-                        ? 'text-primary-600 bg-primary-50'
+                        ? 'text-white bg-primary-600 shadow-md'
                         : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
                     }`}
                     title="Favoris"
@@ -117,7 +117,7 @@ export default function Layout() {
                     to="/cart"
                     className={`p-2 rounded-lg transition-all relative ${
                       isActive('/cart')
-                        ? 'text-primary-600 bg-primary-50'
+                        ? 'text-white bg-primary-600 shadow-md'
                         : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
                     }`}
                     title="Panier"
@@ -130,7 +130,7 @@ export default function Layout() {
                     to="/orders"
                     className={`px-4 py-2 rounded-lg transition-all font-medium ${
                       isActive('/orders')
-                        ? 'bg-primary-100 text-primary-700'
+                        ? 'bg-primary-600 text-white shadow-md'
                         : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
                     }`}
                   >
@@ -141,12 +141,20 @@ export default function Layout() {
                     to="/profile"
                     className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
                       isActive('/profile')
-                        ? 'bg-primary-50'
+                        ? 'bg-primary-600 shadow-md'
                         : 'hover:bg-gray-50'
                     }`}
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-semibold">{user.email?.charAt(0).toUpperCase()}</span>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      isActive('/profile')
+                        ? 'bg-white'
+                        : 'bg-gradient-to-br from-primary-400 to-primary-600'
+                    }`}>
+                      <span className={`text-sm font-semibold ${
+                        isActive('/profile')
+                          ? 'text-primary-600'
+                          : 'text-white'
+                      }`}>{user.email?.charAt(0).toUpperCase()}</span>
                     </div>
                   </Link>
                   <button
