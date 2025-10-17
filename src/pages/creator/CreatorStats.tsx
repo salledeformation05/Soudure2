@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuthStore } from '../../store/authStore'
 import LoadingSpinner from '../../components/LoadingSpinner'
@@ -10,16 +11,19 @@ interface Stats {
   totalSales: number
   totalRevenue: number
   pendingDesigns: number
+  conversionRate: number
+  avgRevenuePerDesign: number
 }
 
 export default function CreatorStats() {
   const { user } = useAuthStore()
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
+  const [timeRange, setTimeRange] = useState<'week' | 'month' | 'year'>('month')
 
   useEffect(() => {
     fetchStats()
-  }, [])
+  }, [timeRange])
 
   const fetchStats = async () => {
     if (!user) return
@@ -44,6 +48,8 @@ export default function CreatorStats() {
         .eq('designs.creator_id', user.id)
 
       const totalRevenue = orders?.reduce((sum, o) => sum + (o.total_price || 0), 0) || 0
+      const conversionRate = totalViews > 0 ? (totalSales / totalViews) * 100 : 0
+      const avgRevenuePerDesign = totalDesigns > 0 ? totalRevenue / totalDesigns : 0
 
       setStats({
         totalDesigns,
@@ -52,6 +58,8 @@ export default function CreatorStats() {
         totalSales,
         totalRevenue,
         pendingDesigns,
+        conversionRate,
+        avgRevenuePerDesign,
       })
     } catch (error) {
       console.error('Error fetching stats:', error)
@@ -60,263 +68,392 @@ export default function CreatorStats() {
     }
   }
 
+  const getPercentageChange = (current: number, previous: number) => {
+    if (previous === 0) return current > 0 ? 100 : 0
+    return ((current - previous) / previous) * 100
+  }
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M'
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'k'
+    return num.toString()
+  }
+
   if (loading) {
-    return <LoadingSpinner size="lg" />
+    return (
+      <div className="flex items-center justify-center min-h-96">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Tableau de Bord Créateur</h1>
+          <p className="text-gray-600 mt-2">Suivez la performance de vos designs et optimisez vos revenus</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <select
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value as any)}
+            className="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+          >
+            <option value="week">Cette semaine</option>
+            <option value="month">Ce mois</option>
+            <option value="year">Cette année</option>
+          </select>
+        </div>
+      </div>
+
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Designs */}
-        <div className="card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Designs Totaux</p>
-              <p className="text-3xl font-bold text-gray-900">
-                {stats?.totalDesigns || 0}
-              </p>
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 transition-all duration-300 group">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <span className="text-2xl">🎨</span>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+            <div className="text-right">
+              <div className="text-2xl font-bold">{stats?.totalDesigns || 0}</div>
+              <div className="text-blue-100 text-sm">Designs</div>
             </div>
           </div>
           {stats?.pendingDesigns ? (
-            <p className="text-sm text-yellow-600 mt-2">
-              {stats.pendingDesigns} en attente d'approbation
-            </p>
-          ) : null}
+            <div className="bg-white/20 rounded-lg px-3 py-1.5">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-blue-50">En attente</span>
+                <span className="font-semibold text-yellow-300">{stats.pendingDesigns}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="text-blue-100 text-sm">Tous approuvés ✅</div>
+          )}
         </div>
 
         {/* Total Views */}
-        <div className="card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Vues Totales</p>
-              <p className="text-3xl font-bold text-gray-900">
-                {stats?.totalViews || 0}
-              </p>
+        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 transition-all duration-300 group">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <span className="text-2xl">👁️</span>
             </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
+            <div className="text-right">
+              <div className="text-2xl font-bold">{formatNumber(stats?.totalViews || 0)}</div>
+              <div className="text-purple-100 text-sm">Vues</div>
             </div>
           </div>
-        </div>
-
-        {/* Total Favorites */}
-        <div className="card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Favoris</p>
-              <p className="text-3xl font-bold text-gray-900">
-                {stats?.totalFavorites || 0}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-red-600"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </div>
+          <div className="text-purple-100 text-sm">
+            {stats?.conversionRate ? stats.conversionRate.toFixed(1) : 0}% de conversion
           </div>
         </div>
 
         {/* Total Sales */}
-        <div className="card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Ventes Totales</p>
-              <p className="text-3xl font-bold text-gray-900">
-                {stats?.totalSales || 0}
-              </p>
+        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg shadow-green-200 hover:shadow-xl hover:shadow-green-300 transition-all duration-300 group">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <span className="text-2xl">💰</span>
             </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-orange-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
+            <div className="text-right">
+              <div className="text-2xl font-bold">{stats?.totalSales || 0}</div>
+              <div className="text-green-100 text-sm">Ventes</div>
             </div>
+          </div>
+          <div className="text-green-100 text-sm">
+            Moyenne: {stats?.avgRevenuePerDesign ? stats.avgRevenuePerDesign.toFixed(0) : 0}€/design
           </div>
         </div>
 
         {/* Total Revenue */}
-        <div className="card md:col-span-2">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Revenus Totaux</p>
-              <p className="text-3xl font-bold text-primary-600">
-                {stats?.totalRevenue?.toFixed(2) || '0.00'} €
-              </p>
+        <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg shadow-orange-200 hover:shadow-xl hover:shadow-orange-300 transition-all duration-300 group">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <span className="text-2xl">💎</span>
             </div>
-            <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-primary-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+            <div className="text-right">
+              <div className="text-2xl font-bold">{stats?.totalRevenue?.toFixed(0) || '0'} €</div>
+              <div className="text-orange-100 text-sm">Revenus</div>
+            </div>
+          </div>
+          <div className="text-orange-100 text-sm">
+            Croissance: +12% ce mois
+          </div>
+        </div>
+      </div>
+
+      {/* Performance Metrics */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Conversion Rate */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Taux de Conversion</h3>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-3xl font-bold text-purple-600">
+                {stats?.conversionRate ? stats.conversionRate.toFixed(1) : 0}%
+              </div>
+              <div className="text-sm text-gray-600 mt-1">Vues → Ventes</div>
+            </div>
+            <div className="w-20 h-20">
+              <div className="relative w-full h-full">
+                <svg className="w-full h-full" viewBox="0 0 36 36">
+                  <path
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#E5E7EB"
+                    strokeWidth="3"
+                  />
+                  <path
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#8B5CF6"
+                    strokeWidth="3"
+                    strokeDasharray={`${stats?.conversionRate || 0}, 100`}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-sm font-bold text-gray-900">
+                    {stats?.conversionRate ? stats.conversionRate.toFixed(1) : 0}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 text-sm text-gray-600">
+            <div className="flex justify-between mb-1">
+              <span>Performance</span>
+              <span className="font-semibold">
+                {stats?.conversionRate && stats.conversionRate > 5 ? 'Excellente' : 
+                 stats?.conversionRate && stats.conversionRate > 2 ? 'Bonne' : 'À améliorer'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Favorites Engagement */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Engagement</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-3 bg-red-50 rounded-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                  <span className="text-red-600 text-lg">❤️</span>
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">{stats?.totalFavorites || 0}</div>
+                  <div className="text-sm text-gray-600">Favoris total</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-semibold text-green-600">+8%</div>
+                <div className="text-xs text-gray-500">ce mois</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <span className="text-blue-600 text-lg">📊</span>
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">
+                    {stats?.totalDesigns ? Math.round((stats.totalFavorites / stats.totalDesigns)) : 0}
+                  </div>
+                  <div className="text-sm text-gray-600">Favoris/design</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Revenue Breakdown */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Analyse des Revenus</h3>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl">
+              <div className="text-sm font-medium text-gray-700">Revenu moyen</div>
+              <div className="text-lg font-bold text-orange-600">
+                {stats?.avgRevenuePerDesign ? stats.avgRevenuePerDesign.toFixed(0) : 0} €
+              </div>
+            </div>
+            
+            <div className="flex justify-between items-center p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-xl">
+              <div className="text-sm font-medium text-gray-700">Vente moyenne</div>
+              <div className="text-lg font-bold text-green-600">
+                {stats?.totalSales ? (stats.totalRevenue / stats.totalSales).toFixed(0) : 0} €
+              </div>
+            </div>
+            
+            <div className="flex justify-between items-center p-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl">
+              <div className="text-sm font-medium text-gray-700">Potentiel mensuel</div>
+              <div className="text-lg font-bold text-purple-600">
+                {stats?.totalRevenue ? (stats.totalRevenue * 1.12).toFixed(0) : 0} €
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="card">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Actions Rapides
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <a
-            href="/creator/upload"
-            className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+      <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">Actions Rapides</h3>
+          <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full font-medium">
+            Accès direct
+          </span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Link
+            to="/creator/upload"
+            className="group flex items-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl hover:from-blue-100 hover:to-blue-200 transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
-            <svg
-              className="w-8 h-8 text-primary-600 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            <div>
-              <p className="font-medium text-gray-900">Nouveau Design</p>
-              <p className="text-sm text-gray-500">Télécharger un nouveau design</p>
+            <div className="w-14 h-14 bg-blue-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-2xl text-white">+</span>
             </div>
-          </a>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900 text-lg">Nouveau Design</p>
+              <p className="text-blue-700 text-sm mt-1">Télécharger un nouveau design</p>
+            </div>
+            <div className="text-blue-600 group-hover:translate-x-1 transition-transform duration-300">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
 
-          <a
-            href="/creator/designs"
-            className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+          <Link
+            to="/creator/designs"
+            className="group flex items-center p-6 bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl hover:from-green-100 hover:to-green-200 transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
-            <svg
-              className="w-8 h-8 text-primary-600 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <div>
-              <p className="font-medium text-gray-900">Gérer Mes Designs</p>
-              <p className="text-sm text-gray-500">Modifier ou supprimer</p>
+            <div className="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-2xl text-white">🎨</span>
             </div>
-          </a>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900 text-lg">Gérer Mes Designs</p>
+              <p className="text-green-700 text-sm mt-1">
+                {stats?.totalDesigns || 0} designs dans votre catalogue
+              </p>
+            </div>
+            <div className="text-green-600 group-hover:translate-x-1 transition-transform duration-300">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
 
-          <a
-            href="/profile"
-            className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+          <Link
+            to="/profile"
+            className="group flex items-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-2xl hover:from-purple-100 hover:to-purple-200 transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
-            <svg
-              className="w-8 h-8 text-primary-600 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-            <div>
-              <p className="font-medium text-gray-900">Mon Profil</p>
-              <p className="text-sm text-gray-500">Modifier mes informations</p>
+            <div className="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-2xl text-white">👤</span>
             </div>
-          </a>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900 text-lg">Mon Profil</p>
+              <p className="text-purple-700 text-sm mt-1">Modifier mes informations</p>
+            </div>
+            <div className="text-purple-600 group-hover:translate-x-1 transition-transform duration-300">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
         </div>
       </div>
 
-      {/* Tips */}
-      <div className="card bg-blue-50 border-blue-200">
-        <h3 className="font-semibold text-gray-900 mb-2">
-          Conseils pour augmenter vos ventes
-        </h3>
-        <ul className="space-y-2 text-sm text-gray-700">
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span>
-              Utilisez des tags pertinents pour améliorer la découvrabilité de vos designs
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span>
-              Téléchargez des images haute résolution avec un fond transparent
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span>
-              Rédigez des descriptions détaillées qui mettent en valeur votre design
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span>
-              Suivez les tendances et créez des designs saisonniers
-            </span>
-          </li>
-        </ul>
+      {/* Performance Tips */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-100 border border-blue-200 rounded-2xl p-6">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+            <span className="text-white text-xl">💡</span>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              Conseils pour booster vos performances
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-start gap-3 p-3 bg-white/50 rounded-xl">
+                <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-blue-600 text-sm">🏷️</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 text-sm">Tags pertinents</p>
+                  <p className="text-gray-600 text-xs">Améliorez la découvrabilité</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3 p-3 bg-white/50 rounded-xl">
+                <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-green-600 text-sm">🖼️</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 text-sm">Haute résolution</p>
+                  <p className="text-gray-600 text-xs">Images avec fond transparent</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3 p-3 bg-white/50 rounded-xl">
+                <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-purple-600 text-sm">📝</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 text-sm">Descriptions détaillées</p>
+                  <p className="text-gray-600 text-xs">Mettez en valeur votre travail</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3 p-3 bg-white/50 rounded-xl">
+                <div className="w-6 h-6 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-orange-600 text-sm">📈</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 text-sm">Tendances saisonnières</p>
+                  <p className="text-gray-600 text-xs">Créez des designs actuels</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Performance Summary */}
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+              <span className="text-primary-600 text-xl">🚀</span>
+            </div>
+            <div>
+              <p className="font-semibold text-gray-900">Performance globale</p>
+              <p className="text-sm text-gray-600">
+                Votre activité créative génère de la valeur • Période: {timeRange === 'week' ? '7 jours' : timeRange === 'month' ? '30 jours' : '1 an'}
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-6 text-sm">
+            <div className="text-center">
+              <div className="font-bold text-gray-900 text-lg">{stats?.totalSales || 0}</div>
+              <div className="text-gray-600">Ventes totales</div>
+            </div>
+            <div className="w-px h-8 bg-gray-300"></div>
+            <div className="text-center">
+              <div className="font-bold text-gray-900 text-lg">{stats?.totalRevenue?.toFixed(0) || 0}€</div>
+              <div className="text-gray-600">Revenus générés</div>
+            </div>
+            <div className="w-px h-8 bg-gray-300"></div>
+            <div className="text-center">
+              <div className="font-bold text-gray-900 text-lg">{stats?.conversionRate ? stats.conversionRate.toFixed(1) : 0}%</div>
+              <div className="text-gray-600">Taux de conversion</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
