@@ -400,8 +400,8 @@ export default function ProviderProfile() {
                 <span className="font-semibold text-primary-600">
                   {(() => {
                     const fields = [formData.business_name, formData.location, formData.capabilities.length]
-                    const completed = fields.filter(field => 
-                      Array.isArray(field) ? field.length > 0 : field.length > 0
+                    const completed = fields.filter(field =>
+                      Array.isArray(field) ? field.length > 0 : (typeof field === 'string' && field.length > 0) || (typeof field === 'number' && field > 0)
                     ).length
                     return Math.round((completed / fields.length) * 100)
                   })()}%
@@ -413,8 +413,8 @@ export default function ProviderProfile() {
                   style={{ 
                     width: `${(() => {
                       const fields = [formData.business_name, formData.location, formData.capabilities.length]
-                      const completed = fields.filter(field => 
-                        Array.isArray(field) ? field.length > 0 : field.length > 0
+                      const completed = fields.filter(field =>
+                        Array.isArray(field) ? field.length > 0 : (typeof field === 'string' && field.length > 0) || (typeof field === 'number' && field > 0)
                       ).length
                       return Math.round((completed / fields.length) * 100)
                     })()}%` 
