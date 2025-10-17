@@ -2,13 +2,20 @@
 
 Le compte client n'a pas pu être créé automatiquement car il nécessite une clé de service Supabase avec les permissions admin.
 
-## Méthode 1 : Via le script Node.js
+## Méthode 1 : Via le script Node.js (RECOMMANDÉ)
 
-Si vous avez la clé `SUPABASE_SERVICE_ROLE_KEY` dans votre fichier `.env`, exécutez simplement :
+1. Ajoutez votre clé de service dans le fichier `.env` :
+   ```
+   SUPABASE_SERVICE_ROLE_KEY=votre_cle_de_service_ici
+   ```
+   (Vous la trouverez dans votre projet Supabase : Settings > API > service_role key)
 
-```bash
-npm run create-client
-```
+2. Exécutez le script :
+   ```bash
+   npm run create-client
+   ```
+
+Le script créera automatiquement le compte avec tous les détails nécessaires.
 
 ## Méthode 2 : Via l'interface Supabase
 

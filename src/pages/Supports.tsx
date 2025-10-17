@@ -99,33 +99,36 @@ export default function Supports() {
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/60 shadow-lg">
-            <div className="text-3xl font-bold text-orange-600 mb-2">{supports.length}</div>
-            <div className="text-sm text-gray-600">Supports disponibles</div>
-          </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/60 shadow-lg">
-            <div className="text-3xl font-bold text-orange-600 mb-2">
-              {Math.min(...supports.map(s => s.production_time_days))}
+        {supports.length > 0 && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/60 shadow-lg">
+              <div className="text-3xl font-bold text-orange-600 mb-2">{supports.length}</div>
+              <div className="text-sm text-gray-600">Supports disponibles</div>
             </div>
-            <div className="text-sm text-gray-600">Jours min. de production</div>
-          </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/60 shadow-lg">
-            <div className="text-3xl font-bold text-orange-600 mb-2">
-              {Math.max(...supports.map(s => s.production_time_days))}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/60 shadow-lg">
+              <div className="text-3xl font-bold text-orange-600 mb-2">
+                {Math.min(...supports.map(s => s.production_time_days))}
+              </div>
+              <div className="text-sm text-gray-600">Jours min. de production</div>
             </div>
-            <div className="text-sm text-gray-600">Jours max. de production</div>
-          </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/60 shadow-lg">
-            <div className="text-3xl font-bold text-orange-600 mb-2">
-              {Math.min(...supports.map(s => s.base_price))}€
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/60 shadow-lg">
+              <div className="text-3xl font-bold text-orange-600 mb-2">
+                {Math.max(...supports.map(s => s.production_time_days))}
+              </div>
+              <div className="text-sm text-gray-600">Jours max. de production</div>
             </div>
-            <div className="text-sm text-gray-600">Prix à partir de</div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/60 shadow-lg">
+              <div className="text-3xl font-bold text-orange-600 mb-2">
+                {Math.min(...supports.map(s => s.base_price))}€
+              </div>
+              <div className="text-sm text-gray-600">Prix à partir de</div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Filters and Sorting */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/60 p-8 mb-12">
+        {supports.length > 0 && (
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/60 p-8 mb-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Categories */}
             <div>
@@ -180,9 +183,32 @@ export default function Supports() {
             </div>
           </div>
         </div>
+        )}
 
         {/* Supports Grid */}
-        {filteredAndSortedSupports.length === 0 ? (
+        {supports.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="max-w-md mx-auto">
+              <div className="w-32 h-32 bg-gradient-to-br from-gray-200 to-gray-300 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <span className="text-5xl">📦</span>
+              </div>
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                Supports à venir
+              </h3>
+              <p className="text-gray-600 mb-8 text-lg leading-relaxed">
+                Nous préparons une collection exceptionnelle de supports pour vos designs.
+                Revenez bientôt pour découvrir toutes nos options !
+              </p>
+              <Link
+                to="/designs"
+                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-600 to-amber-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                <span className="mr-2">🎨</span>
+                Explorer les designs
+              </Link>
+            </div>
+          </div>
+        ) : filteredAndSortedSupports.length === 0 ? (
           <div className="text-center py-16">
             <div className="max-w-md mx-auto">
               <div className="w-32 h-32 bg-gradient-to-br from-gray-200 to-gray-300 rounded-3xl flex items-center justify-center mx-auto mb-6">
