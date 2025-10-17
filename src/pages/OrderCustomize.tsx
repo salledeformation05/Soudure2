@@ -408,7 +408,7 @@ export default function OrderCustomize() {
                           className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 text-lg"
                         />
                         <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
-                          {options.text.length}/50
+                          {(options.text || '').length}/50
                         </div>
                       </div>
                     </div>
