@@ -47,7 +47,7 @@ export default function Home() {
             {/* Badge */}
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
               <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-              <span className="text-white/90 text-sm font-medium">Plateforme n°1 en France</span>
+              <span className="text-white/90 text-sm font-medium">Plateforme n°1 au Bénin</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight">
