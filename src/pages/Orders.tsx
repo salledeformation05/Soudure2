@@ -33,7 +33,6 @@ export default function Orders() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'pending' | 'in_production' | 'completed'>('all')
   const [reviewingOrder, setReviewingOrder] = useState<Order | null>(null)
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
   useEffect(() => {
     fetchOrders()
@@ -384,17 +383,17 @@ export default function Orders() {
                         Personnalisation
                       </h4>
                       <div className="flex flex-wrap gap-2">
-                        {Object.entries(order.customization).map(([key, value]) => (
-                          value && (
-                            <span 
+                        {Object.entries(order.customization).map(([key, value]) =>
+                          value ? (
+                            <span
                               key={key} 
                               className="inline-flex items-center px-3 py-2 bg-primary-50 text-primary-700 rounded-xl text-sm font-medium border border-primary-200"
                             >
                               <span className="w-2 h-2 bg-primary-500 rounded-full mr-2"></span>
                               {key}: {String(value)}
                             </span>
-                          )
-                        ))}
+                          ) : null
+                        )}
                       </div>
                     </div>
                   )}
@@ -487,7 +486,7 @@ export default function Orders() {
       </div>
 
       {/* Custom animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: scale(0.95); }
           to { opacity: 1; transform: scale(1); }

@@ -137,14 +137,14 @@ export default function Supports() {
                 {categories.map(category => (
                   <button
                     key={category}
-                    onClick={() => setSelectedCategory(category)}
+                    onClick={() => setSelectedCategory(category || '')}
                     className={`inline-flex items-center gap-2 px-4 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 ${
                       selectedCategory === category
                         ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg'
                         : 'bg-white text-gray-700 border border-gray-200 hover:border-orange-300 hover:shadow-md'
                     }`}
                   >
-                    <span>{category === 'all' ? '📦' : getCategoryIcon(category)}</span>
+                    <span>{category === 'all' ? '📦' : getCategoryIcon(category || '')}</span>
                     {category === 'all' ? 'Tous' : category}
                   </button>
                 ))}

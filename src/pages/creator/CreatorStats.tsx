@@ -68,10 +68,10 @@ export default function CreatorStats() {
     }
   }
 
-  const getPercentageChange = (current: number, previous: number) => {
-    if (previous === 0) return current > 0 ? 100 : 0
-    return ((current - previous) / previous) * 100
-  }
+  // const getPercentageChange = (current: number, previous: number) => {
+  //   if (previous === 0) return current > 0 ? 100 : 0
+  //   return ((current - previous) / previous) * 100
+  // }
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M'

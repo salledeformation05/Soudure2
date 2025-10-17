@@ -129,7 +129,7 @@ export default function CreatorDesigns() {
   const stats = getStats()
   const filteredDesigns = designs.filter(design =>
     design.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    design.description.toLowerCase().includes(searchTerm.toLowerCase())
+    (design.description || '').toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const getRevenue = (design: Design) => {

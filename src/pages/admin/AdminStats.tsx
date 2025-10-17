@@ -63,10 +63,10 @@ export default function AdminStats() {
     fetchStats()
   }
 
-  const getPercentageChange = (current: number, previous: number) => {
-    if (previous === 0) return current > 0 ? 100 : 0
-    return ((current - previous) / previous) * 100
-  }
+  // const getPercentageChange = (current: number, previous: number) => {
+  //   if (previous === 0) return current > 0 ? 100 : 0
+  //   return ((current - previous) / previous) * 100
+  // }
 
   if (loading) {
     return (

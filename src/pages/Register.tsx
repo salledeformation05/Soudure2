@@ -60,7 +60,7 @@ export default function Register() {
     }
 
     setLoading(true)
-    const { error } = await signUp(formData.email, formData.password, formData.fullName, formData.role)
+    const { error } = await signUp(formData.email, formData.password, formData.fullName)
 
     if (error) {
       setError(error.message)
@@ -334,7 +334,7 @@ export default function Register() {
       </div>
 
       {/* Custom animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
           25% { transform: translateX(-5px); }

@@ -393,7 +393,7 @@ export default function AdminReports() {
           </div>
           
           <div className="space-y-4">
-            {reportData.revenueByMonth.map((item, index) => {
+            {reportData.revenueByMonth.map((item) => {
               const maxRevenue = Math.max(...reportData.revenueByMonth.map(r => r.revenue))
               const percentage = maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0
               
