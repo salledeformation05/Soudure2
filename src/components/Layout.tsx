@@ -1,13 +1,29 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 
 export default function Layout() {
   const { user, signOut } = useAuthStore()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleSignOut = async () => {
     await signOut()
     navigate('/login')
+  }
+
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/'
+    return location.pathname.startsWith(path)
+  }
+
+  const getDashboardPath = () => {
+    if (!user) return '/profile'
+    switch (user.role) {
+      case 'creator': return '/creator'
+      case 'provider': return '/provider'
+      case 'admin': return '/admin'
+      default: return '/profile'
+    }
   }
 
   return (
@@ -26,26 +42,59 @@ export default function Layout() {
 
             {/* Navigation */}
             <nav className="hidden md:flex items-center space-x-1">
-              <Link to="/designs" className="px-4 py-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all font-medium">
+              <Link
+                to="/designs"
+                className={`px-4 py-2 rounded-lg transition-all font-medium ${
+                  isActive('/designs')
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
+                }`}
+              >
                 Catalogue
               </Link>
-              <Link to="/supports" className="px-4 py-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all font-medium">
+              <Link
+                to="/supports"
+                className={`px-4 py-2 rounded-lg transition-all font-medium ${
+                  isActive('/supports')
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
+                }`}
+              >
                 Produits
               </Link>
               {user && (
-                <Link to={
-                  user.role === 'creator' ? '/creator' :
-                  user.role === 'provider' ? '/provider' :
-                  user.role === 'admin' ? '/admin' :
-                  '/profile'
-                } className="px-4 py-2 bg-primary-50 text-primary-700 hover:bg-primary-100 rounded-lg transition-all font-semibold">
+                <Link
+                  to={getDashboardPath()}
+                  className={`px-4 py-2 rounded-lg transition-all font-semibold flex items-center gap-2 ${
+                    isActive(getDashboardPath())
+                      ? 'bg-primary-600 text-white shadow-lg'
+                      : 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+                  }`}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
                   Dashboard
                 </Link>
               )}
-              <Link to="/about" className="px-4 py-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all font-medium">
+              <Link
+                to="/about"
+                className={`px-4 py-2 rounded-lg transition-all font-medium ${
+                  isActive('/about')
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
+                }`}
+              >
                 À propos
               </Link>
-              <Link to="/contact" className="px-4 py-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all font-medium">
+              <Link
+                to="/contact"
+                className={`px-4 py-2 rounded-lg transition-all font-medium ${
+                  isActive('/contact')
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
+                }`}
+              >
                 Contact
               </Link>
             </nav>
@@ -54,21 +103,51 @@ export default function Layout() {
             <div className="flex items-center space-x-3">
               {user ? (
                 <>
-                  <Link to="/favorites" className="p-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all" title="Favoris">
+                  <Link
+                    to="/favorites"
+                    className={`p-2 rounded-lg transition-all ${
+                      isActive('/favorites')
+                        ? 'text-primary-600 bg-primary-50'
+                        : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
+                    }`}
+                    title="Favoris"
+                  >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                   </Link>
-                  <Link to="/cart" className="p-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all relative" title="Panier">
+                  <Link
+                    to="/cart"
+                    className={`p-2 rounded-lg transition-all relative ${
+                      isActive('/cart')
+                        ? 'text-primary-600 bg-primary-50'
+                        : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
+                    }`}
+                    title="Panier"
+                  >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                   </Link>
-                  <Link to="/orders" className="px-4 py-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all font-medium">
+                  <Link
+                    to="/orders"
+                    className={`px-4 py-2 rounded-lg transition-all font-medium ${
+                      isActive('/orders')
+                        ? 'bg-primary-100 text-primary-700'
+                        : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
+                    }`}
+                  >
                     Commandes
                   </Link>
                   <div className="w-px h-6 bg-gray-300"></div>
-                  <Link to="/profile" className="flex items-center space-x-2 px-3 py-2 hover:bg-gray-50 rounded-lg transition-all">
+                  <Link
+                    to="/profile"
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
+                      isActive('/profile')
+                        ? 'bg-primary-50'
+                        : 'hover:bg-gray-50'
+                    }`}
+                  >
                     <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center">
                       <span className="text-white text-sm font-semibold">{user.email?.charAt(0).toUpperCase()}</span>
                     </div>
